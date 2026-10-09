@@ -37,7 +37,8 @@
 ansible-vps-setup/
 ├── ansible.cfg                 # Конфигурация Ansible
 ├── requirements.yml            # Список зависимостей
-├── site.yml                    # Главный плейбук (точка входа)
+├── test.yml                    # Главный плейбук для тестовой среды
+├── vps.yml                     # Главный плейбук для прода
 ├── inventory/
 │   └── inventory.yml.example   # Инвентарь серверов (группы vps, test)
 │
