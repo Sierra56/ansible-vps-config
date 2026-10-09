@@ -29,6 +29,8 @@
 
 ---
 
+**Перед запуском необходимо скачать зависимости: ansible-galaxy install -r requirements.yml**
+
 ## 📂 Структура проекта
 
 ```text
@@ -37,7 +39,7 @@ ansible-vps-setup/
 ├── requirements.yml            # Список зависимостей
 ├── site.yml                    # Главный плейбук (точка входа)
 ├── inventory/
-│   └── inventory.yml.example           # Инвентарь серверов (группы vps, test)
+│   └── inventory.yml.example   # Инвентарь серверов (группы vps, test)
 │
 ├── group_vars/
 │   └── all/                    # Общие переменные для всех групп
