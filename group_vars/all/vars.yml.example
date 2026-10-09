@@ -1,0 +1,47 @@
+#порт подключения по ssh
+ssh_port: 2222
+
+#порт веб панели 3xui
+xui_port: 8080
+
+#имя дополнительного пользователя
+additional_username: "admin"
+
+#какие ssh ключи где брать
+ssh_users:
+  - user: root
+    key_file: "{{ lookup('file', '/root/.ssh/ansible_key.pub') }}"
+  - user: "{{ additional_username }}"
+    key_file: "{{ lookup('file', '/home/sierra/.ssh/vps_key.pub') }}"
+
+#список пакетов для установки (RedHat)
+packages_redhat:
+  - nano
+  - ncdu
+  - fail2ban
+  - git
+  - htop
+  - curl
+  - wget
+  - python3-firewall
+
+  #список пакетов для установки (Debian)
+packages_debian:
+  - nano
+  - ncdu
+  - ufw
+  - fail2ban
+  - git
+  - htop
+  - curl
+  - wget
+
+#Ссылка на скрипт установки 3xui
+xui_install_url: "https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh"
+
+#Добавляем в исключения fail2ban ip адреса
+fail2ban_ignoreip:
+  - "172.0.0.1/8"
+  - "::1"
+
+timezone: "Asia/Yekaterinburg"

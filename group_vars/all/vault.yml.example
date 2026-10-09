@@ -1,0 +1,3 @@
+---
+vault_root_password: "YourSuperSecretRootPassword"
+vault_additional_user_password: "YourSuperSecretUserPassword"

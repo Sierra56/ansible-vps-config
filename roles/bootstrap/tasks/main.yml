@@ -1,0 +1,39 @@
+---
+- name: Installing python 3.8+
+  ansible.builtin.raw: |
+    set -e
+    PYTHON_INSTALLED=false
+    if command -v python3.9 >/dev/null 2>&1; then
+      PYTHON_INSTALLED=true
+    elif command -v python3.11 >/dev/null 2>&1; then
+      PYTHON_INSTALLED=true
+    elif command -v python3 >/dev/null 2>&1; then
+      PY_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
+      PY_MAJOR=$(echo $PY_VERSION | cut -d. -f1)
+      PY_MINOR=$(echo $PY_VERSION | cut -d. -f2)
+      if [ "$PY_MAJOR" -ge 3 ] && [ "$PY_MINOR" -ge 8 ]; then
+        PYTHON_INSTALLED=true
+      fi
+    fi
+    if [ "$PYTHON_INSTALLED" = true ]; then
+      echo "PYTHON_ALREADY_INSTALLED"
+    else
+      if command -v dnf >/dev/null 2>&1; then
+        dnf install -y epel-release
+        dnf install -y python3.9 || dnf install -y python3.11 || dnf install -y python3
+        if command -v python3.9 >/dev/null 2>&1; then
+          alternatives --set python3 /usr/bin/python3.9 || true
+        elif command -v python3.11 >/dev/null 2>&1; then
+          alternatives --set python3 /usr/bin/python3.11 || true
+        fi
+      elif command -v apt-get >/dev/null 2>&1; then
+        apt-get update
+        apt-get install -y python3 python3-apt
+      else
+        echo "Unsupported OS"
+        exit 1
+      fi
+      echo "PYTHON_JUST_INSTALLED"
+    fi
+  register: python_install_result
+  changed_when: "'PYTHON_JUST_INSTALLED' in python_install_result.stdout"

@@ -1,0 +1,49 @@
+---
+- name: Check if 3xui is installed
+  ansible.builtin.stat:
+    path: /etc/x-ui/install-result.env
+  register: xui_installed
+
+- name: Download 3xui script
+  ansible.builtin.get_url:
+    url: "{{ xui_install_url }}"
+    dest: /tmp/install.sh
+    mode: "0755"
+  when: not xui_installed.stat.exists
+
+- name: Run 3xui install
+  ansible.builtin.command:
+    cmd: /tmp/install.sh
+  environment:
+    XUI_NONINTERACTIVE: "1"
+    XUI_DB_TYPE: "sqlite"
+    XUI_SSL_MODE: "ip"
+    XUI_PORT: "{{ xui_port }}"
+  register: install_output
+  changed_when: "'is installed' not in install_output.stdout"
+#  async: 300
+#  poll: 10
+  when: not xui_installed.stat.exists
+
+- name: Delete script
+  ansible.builtin.file:
+    path: /tmp/install.sh
+    state: absent
+
+- name: Read creds for 3xui
+  ansible.builtin.shell: |
+    source /etc/x-ui/install-result.env
+    echo "=================================================="
+    echo "ДОСТУП К ПАНЕЛИ 3X-UI НА СЕРВЕРЕ [ {{ inventory_hostname }} ]:"
+    echo "=================================================="
+    echo "Username:  $XUI_USERNAME"
+    echo "Password:  $XUI_PASSWORD"
+    echo "Port:      $XUI_PANEL_PORT"
+    echo "URL:       $XUI_ACCESS_URL"
+    echo "=================================================="
+  register: creds_out
+  changed_when: false
+
+- name: Print creds
+  ansible.builtin.debug:
+    msg: "{{ creds_out.stdout }}"

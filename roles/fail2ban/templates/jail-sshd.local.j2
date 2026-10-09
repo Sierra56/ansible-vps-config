@@ -1,0 +1,16 @@
+[sshd]
+enabled = true
+port = {{ ssh_port }}
+
+ignoreip = {{ fail2ban_ignoreip | join('') }}
+
+maxretry = {{ fail2ban_maxretry }}
+bantime = {{ fail2ban_bantime }}
+findtime = {{ fail2ban_findtime }}
+
+# Указываем правильный путь к логам в зависимости от ОС
+{% if ansible_facts['os_family'] == 'RedHat' %}
+logpath = /var/log/secure
+{% else %}
+logpath = /var/log/auth.log
+{% endif %}

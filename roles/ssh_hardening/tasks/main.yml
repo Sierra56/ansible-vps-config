@@ -1,0 +1,21 @@
+---
+- name: Change sshd parameters
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.search }}"
+    line: "{{ item.replace }}"
+    state: present
+    backup: true
+    validate: /usr/sbin/sshd -t -f %s
+  loop:
+    - search: '^#?\s*Port\s+'
+      replace: "Port {{ ssh_port }}"
+    - search: '^#?\s*PermitRootLogin'
+      replace: "PermitRootLogin no"
+    - search: '^#?\s*PasswordAuthentication'
+      replace: "PasswordAuthentication no"
+    - search: '^#?\s*PermitEmptyPasswords'
+      replace: "PermitEmptyPasswords no"
+    - search: '^#?\s*X11Forwarding'
+      replace: "X11Forwarding no"
+  notify: Reload ssh

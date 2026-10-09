@@ -1,0 +1,47 @@
+---
+- name: Prepare VPS to start playbook
+  hosts: vps
+  become: true
+  gather_facts: false
+  roles:
+    - bootstrap
+
+- name: Common configure VPS (without ssh config)
+  hosts: vps
+  become: true
+  gather_facts: true
+  roles:
+    - common_packages
+    - users
+    - firewall
+    - fail2ban
+
+- name: Configure VPN on VPS
+  hosts: vps
+  become: true
+  gather_facts: false
+  roles:
+    - 3xui
+
+- name: Final configure ssh
+  hosts: vps
+  become: true
+  gather_facts: true
+  roles:
+    - ssh_hardening
+
+- name: Configure time and ntp
+  hosts: vps
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Set timezone
+      ansible.builtin.command: "timedatectl set-timezone {{ timezone }}"
+      changed_when: false
+  roles:
+    - role: linux-system-roles.timesync
+      vars:
+        timesync_ntp_servers:
+          - hostname: pool.ntp.org
+            iburst: true

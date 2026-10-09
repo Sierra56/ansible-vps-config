@@ -1,0 +1,27 @@
+---
+- name: Set admin group on OS family
+  ansible.builtin.set_fact:
+    admin_group: "{{ 'wheel' if ansible_facts['os_family'] == 'RedHat' else 'sudo'}}"
+
+- name: Changing root password
+  ansible.builtin.user:
+    name: root
+    password: "{{ vault_root_password | ansible.builtin.password_hash('sha512') }}"
+    update_password: always
+
+- name: Adding user
+  ansible.builtin.user:
+    name: "{{ additional_username }}"
+    password: "{{ vault_additional_user_password | ansible.builtin.password_hash('sha512') }}"
+    shell: /bin/bash
+    create_home: true
+    groups: "{{ admin_group }}"
+    append: true
+    state: present
+
+- name: Adding ssh keys to host
+  ansible.posix.authorized_key:
+    user: "{{ item.user }}"
+    state: present
+    key: "{{ item.key_file }}"
+  loop: "{{ ssh_users }}"

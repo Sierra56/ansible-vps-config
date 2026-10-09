@@ -1,0 +1,11 @@
+---
+- name: Reload firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    state: reloaded
+  when: ansible_facts.os_family == "RedHat"
+
+- name: Reload ufw
+  ansible.builtin.command:
+    cmd: ufw reload
+  when: ansible_facts.os_family == "Debian"

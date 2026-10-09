@@ -1,0 +1,25 @@
+*.pub
+*.pem
+*.key
+*.rsa
+*.ed25519
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+
+*.plain.yml
+*.retry
+*.log
+group_vars/all/vars.yml
+group_vars/all/vault.yml
+inventory/inventory.yml
+.ansible_roles/
+galaxy_roles/
+# IDE (VS Code, PyCharm, etc.)
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.classpath
