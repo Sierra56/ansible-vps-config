@@ -37,7 +37,7 @@ ansible-vps-setup/
 ├── requirements.yml            # Список зависимостей
 ├── site.yml                    # Главный плейбук (точка входа)
 ├── inventory/
-│   └── inventory.yml           # Инвентарь серверов (группы vps, test)
+│   └── inventory.yml.example           # Инвентарь серверов (группы vps, test)
 │
 ├── group_vars/
 │   └── all/                    # Общие переменные для всех групп
